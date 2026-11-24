@@ -2,7 +2,11 @@ name: Compila APK
 
 on:
   push:
+    branches: [main]
   workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -29,3 +33,12 @@ jobs:
         with:
           name: MeteoVeneto-apk
           path: MeteoVeneto.apk
+
+      - name: Pubblica la Release con l'APK
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "build-${{ github.run_number }}" MeteoVeneto.apk \
+            --title "Meteo Veneto (build ${{ github.run_number }})" \
+            --notes "APK di prova (firma di sviluppo). Scarica MeteoVeneto.apk e installalo." \
+            --latest
